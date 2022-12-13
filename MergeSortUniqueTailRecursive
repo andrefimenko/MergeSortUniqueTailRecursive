@@ -1,0 +1,36 @@
+import scala.annotation.tailrec
+import scala.util.Random
+
+object main extends App{
+
+  def mergeSort(seq: Vector[Int]): Vector[Int] = {
+    val seqList = seq.toList
+    seqList match {
+      case Nil => Nil.toVector
+      case xs::Nil => List(xs).toVector
+      case _ =>
+        val (left, right) = seqList splitAt(seqList.length / 2)
+        merge(mergeSort(left.toVector), mergeSort(right.toVector)).toVector
+    }
+  }
+
+  @tailrec
+  def merge(seq1: Vector[Int], seq2: Vector[Int], accumulator: List[Int] = List()): List[Int] = {
+    val (seq1List, seq2List) = (seq1.toList, seq2.toList)
+    (seq1List, seq2List) match {
+      case (Nil, _) => accumulator ++ seq2List
+      case (_, Nil) => accumulator ++ seq1List
+      case (x::xs, y::ys) =>
+        if (x == y) merge(xs.toVector ,seq2List.toVector, accumulator)
+        else if (x < y) merge(xs.toVector, seq2, accumulator :+ x)
+        else merge(seq1, ys.toVector, accumulator :+ y)
+    }
+  }
+
+  //  private val v = Vector.fill(1000)(Random.nextInt)
+
+  private val v = Vector(1, 1, 2, 3, 6, 1, 8, 8, 9, 3, 4, 2, 4)
+
+  println(mergeSort(v))
+
+}
